@@ -36,6 +36,11 @@ _S = myprofile.search()
 LOCAL = myprofile.words_re([_S["city"], _S["state"], _S["state_name"]])
 REMOTE_AU = re.compile(r"(?i)^[\s,;()-]*remote[\s,;()-]*$|remote.*australia|australia.*remote")
 
+def agg_scan_safe_id(x):
+    """Same rule as safe_id in agg_scan.py, so ranked ads find their saved text."""
+    return re.sub(r"[^A-Za-z0-9_-]", "_", str(x))[:80] or "unknown"
+
+
 YEARS = re.compile(r"(\d{1,2})\s*\+?\s*(?:-|to|–)?\s*(\d{1,2})?\s*\+?\s*(?:years?|yrs?)", re.I)
 MONEY = re.compile(r"\$?\s?(\d{2,3})(?:[,.](\d{3}))?\s*(k\b|,000|000)?", re.I)
 
@@ -105,7 +110,7 @@ def main():
 
     out = []
     for r in rows:
-        key = f"{r.get('source', r.get('ats', ''))}-{r.get('id', '')}"
+        key = f"{r.get('source', r.get('ats', ''))}-{agg_scan_safe_id(r.get('id', ''))}"
         body = details.get(key, "")
         text = " ".join([r.get("title", ""), r.get("teaser", ""), r.get("salary", ""), r.get("type", ""), body])
         pts, tags = score(text)

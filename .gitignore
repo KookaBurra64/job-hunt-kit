@@ -8,6 +8,11 @@ ads/
 letters/
 output/
 sourcing/
+# Your CV and letters as Word or PDF files, wherever you put them in this folder
+*.docx
+*.doc
+*.pdf
+!examples/**
 
 # Python and editor clutter
 __pycache__/

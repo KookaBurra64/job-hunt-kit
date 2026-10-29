@@ -45,4 +45,4 @@ that came up. Keep only what will change what we do next time.
 - Remove anything that is no longer true. Don't pile new notes on top of old ones.
 - Keep it under about 300 lines. Move finished applications and old notes to
   `PLAYBOOK-archive.md`.
-- Never put passwords here.
+- Never put passwords, tax file numbers, bank details or ID numbers here.

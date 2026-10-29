@@ -326,7 +326,7 @@ def talent_rows(days, ddir=None):
         except Exception as e:  # noqa: BLE001
             return None, f"talent detail {jid}: {e}"
         if ddir and body and keep(row):
-            with open(os.path.join(ddir, f"talent-{jid}.txt"), "w", encoding="utf-8") as f:
+            with open(os.path.join(ddir, f"talent-{safe_id(jid)}.txt"), "w", encoding="utf-8") as f:
                 f.write(f"{row['company']} | {row['title']} | {row['location']} | {row['mode']} | posted {row['posted']}\n{row['url']}\n\n{body}\n")
         return row, None
 
@@ -584,13 +584,18 @@ def workday_rows(days, ddir=None):
                    "teaser": "", "url": info.get("externalUrl", "")}
             rows[row["id"]] = row
             if ddir:
-                with open(os.path.join(ddir, f"workday-{row['id']}.txt"), "w", encoding="utf-8") as f:
+                with open(os.path.join(ddir, f"workday-{safe_id(row['id'])}.txt"), "w", encoding="utf-8") as f:
                     f.write(f"{name} | {row['title']} | {row['location']} | | | posted {row['posted']}\n{row['url']}\n\n"
                             f"{strip(info.get('jobDescription', ''))}\n")
     return list(rows.values()), errs
 
 
 # --------------------------------------------------------------- shared
+def safe_id(x):
+    """Job IDs come from the job sites; keep only safe characters before using one in a file name."""
+    return re.sub(r"[^A-Za-z0-9_-]", "_", str(x))[:80] or "unknown"
+
+
 def strip(s):
     s = re.sub(r'<br\s*/?>|</p>|</li>|</div>|</h\d>', '\n', s)
     s = re.sub(r'<[^>]+>', '', s)
@@ -650,7 +655,7 @@ def main():
                   "vic": lambda r: vic_detail(r["url"])}
 
         def fetch(r):
-            fn = os.path.join(ddir, f"{r['source']}-{r['id']}.txt")
+            fn = os.path.join(ddir, f"{r['source']}-{safe_id(r['id'])}.txt")
             if os.path.exists(fn) or r["source"] not in DETAIL:   # jora and indeed detail pages 403; talent and workday written during scan
                 return None
             try:
