@@ -8,7 +8,15 @@ you. Ask Claude to adjust anything that doesn't work for you.
 
 ## Getting started
 
-You need a paid Claude plan (Pro or above). Then:
+**Which Claude plan?** The full kit needs a paid plan (Pro or above), because it runs in the
+Code tab of the desktop app. That's what I'd recommend: you get the job search, the ranking,
+Word and PDF files, and a Claude that remembers where you're up to between sessions.
+
+On the free plan you can still use the writing part: a prompt that helps you tailor your CV
+and cover letter for each job. You search for jobs yourself, and the daily limits are tight.
+See [No paid plan?](#no-paid-plan) below.
+
+**With a paid plan:**
 
 1. Install the Claude desktop app if you do not have it: https://claude.com/download
 2. Install Python: https://www.python.org/downloads/. On Windows, tick **"Add python.exe to PATH"**
