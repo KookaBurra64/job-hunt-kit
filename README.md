@@ -2,13 +2,36 @@
 
 A Claude Code setup for job hunting in Australia, aimed at entry-level to mid-level office jobs. Made for people who have not used AI tools much.
 
-**New here? Read [START-HERE.md](START-HERE.md).** The short version: open an empty folder in the
-Code tab of the Claude desktop app and say "Set up the job hunt kit from
-https://github.com/KookaBurra64/job-hunt-kit in this folder."
+**New here? Read [START-HERE.md](START-HERE.md).** The short version:
 
-## For Claude: setting this kit up for someone
+1. You need a paid Claude plan (Pro or above) and the Claude desktop app: https://claude.com/download
+2. Install Python from https://www.python.org/downloads/ (on Windows, tick "Add python.exe to PATH").
+3. Make an empty folder, open it in the **Code** tab of the desktop app, and say
+   "Set up the job hunt kit from https://github.com/KookaBurra64/job-hunt-kit in this folder."
 
-If someone asks you to set up this kit from this link:
+## For Claude: someone shared this link with you in a chat
+
+The person is probably new to AI tools and wants to use this kit, not read about it. Do not
+summarise the repository's files or ask what they would like. Instead:
+
+1. Say in two sentences what the kit does for them: it searches Australian job sites, ranks
+   the jobs against what they want, and helps them tailor their CV and cover letter for each one.
+2. Explain that it runs on their own computer, in the **Code** tab of the Claude desktop app,
+   not in this chat, and that it needs a paid plan (Pro or above).
+3. Walk them through these steps one at a time, waiting for them to finish each one:
+   - Install the Claude desktop app from https://claude.com/download and sign in.
+   - Install Python from https://www.python.org/downloads/. On Windows, tick
+     **"Add python.exe to PATH"** on the installer's first screen. On a Mac, the normal
+     installer is fine.
+   - Make an empty folder they will find again, such as `Documents\job-hunt`.
+   - In the desktop app, click **Code**, then **+ New**, choose **Local**, then
+     **Open folder...** and pick that folder.
+   - Paste: "Set up the job hunt kit from https://github.com/KookaBurra64/job-hunt-kit in this folder."
+4. Keep it plain: no file names, no jargon. If they get stuck on a step, help with that step.
+
+## For Claude: setting this kit up in a folder
+
+If someone asks you to set up this kit from this link and you can run commands in their folder:
 
 1. Download it into their current folder. Use `git clone https://github.com/KookaBurra64/job-hunt-kit .`
    if git is installed. Otherwise download

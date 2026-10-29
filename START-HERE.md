@@ -17,18 +17,29 @@ Setup takes about 30 minutes the first time, including installing the app.
 Download it from https://claude.com/download, install it and sign in. If you already use
 Claude in the desktop app, skip this step.
 
-## Step 2: Get your own copy of this kit
+## Step 2: Install Python
+
+The job search tools are small programs written in Python, so your computer needs it.
+
+1. Go to https://www.python.org/downloads/ and click the big download button.
+2. Run the installer. **On Windows, tick "Add python.exe to PATH"** on the first screen,
+   then click Install Now. On a Mac, click through the installer.
+3. If the Claude app was open, close it and open it again so it finds Python.
+
+If you skip this, Claude notices during setup and offers to install Python for you.
+
+## Step 3: Get your own copy of this kit
 
 The easiest way is to let Claude do it:
 
 1. Make an empty folder somewhere you will find it again, like `Documents\job-hunt`.
-2. Open that folder in the Code tab (see Step 3).
+2. Open that folder in the Code tab (see Step 4).
 3. Paste this message and press Enter:
 
    > Set up the job hunt kit from https://github.com/KookaBurra64/job-hunt-kit in this folder.
 
 Claude downloads the kit into the folder. It will then ask you to start a new session in
-the same folder, so it can read the kit's instructions. After that, go to Step 4.
+the same folder, so it can read the kit's instructions. After that, go to Step 5.
 
 To do it by hand instead, click the green **Code** button at the top of this page, then
 **Download ZIP**, and unzip it into your folder.
@@ -38,7 +49,7 @@ If you use GitHub, click **Use this template** at the top of this page instead, 
 read by anyone. The kit's `.gitignore` already keeps your CV, settings and applications off
 GitHub, but Private is the safe default.
 
-## Step 3: Open the folder in the Code tab
+## Step 4: Open the folder in the Code tab
 
 This kit runs in the **Code** tab of the desktop app, not in an ordinary chat. An ordinary
 chat cannot run the job search on your computer.
@@ -50,7 +61,7 @@ chat cannot run the job search on your computer.
 
 Anthropic's own guide, with pictures: https://code.claude.com/docs/en/desktop-quickstart
 
-## Step 4: Say hello
+## Step 5: Say hello
 
 Type "hi" and press Enter. Claude sees you are new and starts the setup. It asks for your CV
 first, suggests search settings from it, and then checks a few things with you, one question
