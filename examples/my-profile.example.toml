@@ -1,0 +1,74 @@
+# Your job search settings. Claude fills this in for you during setup.
+# You can also edit it by hand: copy it to my-profile.toml in the main folder.
+# Lines starting with # are notes and are ignored.
+#
+# This file stays on your computer. It is listed in .gitignore, so it is never uploaded.
+
+[me]
+# Goes at the top of your cover letters.
+name = "Sam Example"
+location = "Melbourne, VIC"
+phone = "0400 000 000"
+email = "sam.example@example.com"
+linkedin = "linkedin.com/in/sam-example"
+
+[search]
+# What you would type into the Seek search box. Every job site gets searched for each one.
+# Four to eight is plenty. The first few are used on the sites that allow fewer searches.
+job_titles = ["administration officer", "office coordinator", "marketing coordinator",
+              "executive assistant", "customer service officer", "operations coordinator"]
+city = "Melbourne"        # any Australian city or town
+state = "VIC"             # VIC, NSW, QLD, WA, SA, TAS, ACT or NT
+include_remote = true     # also look for remote jobs anywhere in Australia
+days = 7                  # how far back to look
+
+# LinkedIn and Indeed are not searched unless you add them here, like this:
+#   extra_sources = ["linkedin", "indeed"]
+# Their terms of use do not allow automated searching. The search reads only their public
+# job listings, without logging in, at a gentle pace, but it is your call.
+extra_sources = []
+
+# Only if you are a graduate: GradConnection categories, as they appear in its web addresses
+# (au.gradconnection.com/graduate-jobs/<category>/). Leave empty otherwise.
+graduate_categories = []  # e.g. ["business-and-commerce", "marketing"]
+
+[filter]
+# A job title must contain at least one of these words to make your list.
+title_words = ["administration", "administrator", "admin", "coordinator", "assistant", "officer"]
+# Any job title containing one of these is dropped.
+skip_title_words = ["senior", "lead", "principal", "manager", "director", "head of",
+                    "intern", "sales", "recruiter", "casual"]
+
+[ranking]
+# If an ad says any of these, it drops to the bottom of the list.
+dealbreakers = ["security clearance", "nv1", "baseline clearance", "must be an australian citizen"]
+# Lowest yearly salary you would take, before super. 0 turns this off.
+# Most ads do not print a salary, so this only catches the ones that do.
+salary_floor = 65000
+# Ads that ask for more years of experience than this lose points. 0 turns this off.
+max_years_experience = 3
+
+[ranking.good_words]
+# Words in the ad that make it a better fit for you, with points. Bigger means more important.
+"microsoft 365" = 3
+"excel" = 2
+"events" = 2
+"social media" = 2
+"hybrid" = 2
+"full time" = 1
+"permanent" = 1
+
+[ranking.bad_words]
+# Words that make it a worse fit, with negative points.
+"contract" = -3
+"temp" = -3
+"weekend work" = -2
+"commission" = -3
+
+[cv]
+# Your CV is checked against this when it is built.
+max_pages = 2
+
+[writing]
+# Words you never want in your CV or letters, on top of the built-in list.
+extra_banned_words = []

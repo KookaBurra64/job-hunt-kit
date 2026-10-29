@@ -1,0 +1,19 @@
+# Your personal files. These stay on your computer and are never uploaded.
+my-profile.toml
+my-cv.md
+applications.md
+PLAYBOOK.md
+PLAYBOOK-archive.md
+ads/
+letters/
+output/
+sourcing/
+
+# Python and editor clutter
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+Thumbs.db
+~$*
+.claude/settings.local.json

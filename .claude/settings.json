@@ -1,0 +1,14 @@
+{
+  "model": "sonnet",
+  "permissions": {
+    "allow": [
+      "Bash(python tools/agg_scan.py:*)",
+      "Bash(python tools/ats_scan.py:*)",
+      "Bash(python tools/rank_leads.py:*)",
+      "Bash(python tools/copy_check.py:*)",
+      "Bash(python tools/criteria_check.py:*)",
+      "Bash(python tools/estimate_lines.py:*)",
+      "Bash(python --version)"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+# Domains that do not work from the agent tools. Read this before any sourcing pass.
+# Claude's web tools get refused by these. The scripts in tools/ reach most of them fine.
+# Format: one host per line, "#" comments. Update after each pass.
+
+# --- 403 to WebFetch (aggregators and boards that block non-browser agents) ---
+seek.com.au              # WebFetch 403; the SCRIPT (tools/agg_scan.py) reaches api/jobsearch/v5 and job pages fine
+www.seek.com.au
+au.seek.com
+au.indeed.com            # WebFetch 403; the SCRIPT reaches search pages through Git's curl (agg_scan.py indeed_rows); viewjob pages 403 everywhere
+glassdoor.com.au
+gradconnection.com.au
+au.prosple.com
+au.jora.com/job          # detail pages 403; category and company pages work
+builtin.com              # company pages 403; builtinmelbourne.com listing pages work
+careers.vic.gov.au
+interscale.com.au
+leonardo.ai
+lawpath.bamboohr.com
+api.smartrecruiters.com  # blocked by the WebFetch domain safety check; the SCRIPT reaches it fine
+jobs.lever.co            # HTML pages 403; api.lever.co JSON works
+startup.jobs
+
+# --- 429 rate limited ---
+adzuna.com.au
+
+# --- DNS or connection reset ---
+jobs.unimelb.edu.au
+careers.xero.com
+careers.essentialenergy.com.au
+careers.ausgrid.com.au
+au.linkedin.com/jobs/search   # reset on every attempt; the SCRIPT reaches www.linkedin.com/jobs-guest/jobs/api/* fine
+rosterfy.com
+cogent.co
+www.thoughtworks.com
+mantelgroup.com.au
+everest.engineering
+kablamo.com.au
+careers.airwallex.com
+
+# --- Workday: needs the CXS JSON path, and even then it is per-req unreliable ---
+# https://<tenant>.wd3.myworkdayjobs.com/wday/cxs/<tenant>/<site>/job/<loc>/<slug>_<REQ>
+# Worked 2026-09-03: REA R0015524, R0015404.  403: R0015550, R0015256-1.
+
+# --- Sources that DO work, use these first ---
+# boards-api.greenhouse.io, api.lever.co, api.ashbyhq.com, apply.workable.com  -> tools/ats_scan.py
+# au.talent.com          search with &date=N, detail at /view?id=
+# au.jora.com            category and company pages only
+# employmenthero.com     organisation and position pages
+# builtinmelbourne.com   listing pages
+askamanager.org  # 403 on every path, research pass 2026-09-21
+
+# --- Added 2026-10-02 from the agent step (ledger-agent-1002.md) ---
+au.jora.com                  # category pages now fail too (WebFetch error or domain check); was listed as working on 2026-09-11
+jobs.employmenthero.com      # public board is JS rendered, no rows to WebFetch; individual employmenthero.com/jobs/position/ pages load in Chrome
+jobs.auspost.com.au          # renders no listings
+# carsales, MYOB and Marqo /careers URLs 404; Sportsbet's guessed careers host does not resolve. Find the real URL by hand before naming them in a brief again.
