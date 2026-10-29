@@ -6,7 +6,7 @@
 seek.com.au              # WebFetch 403; the SCRIPT (tools/agg_scan.py) reaches api/jobsearch/v5 and job pages fine
 www.seek.com.au
 au.seek.com
-au.indeed.com            # WebFetch 403; the SCRIPT reaches search pages through Git's curl (agg_scan.py indeed_rows); viewjob pages 403 everywhere
+au.indeed.com            # blocks automated access; not searched by the kit
 glassdoor.com.au
 gradconnection.com.au
 au.prosple.com

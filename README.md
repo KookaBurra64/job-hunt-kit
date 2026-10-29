@@ -14,7 +14,7 @@ You need a paid Claude plan (Pro or above). Then:
    and pick that folder.
 5. Paste this and press Enter:
 
-   > Download https://github.com/KookaBurra64/job-hunt-kit into this folder, including the hidden .claude folder. Then tell me to start a new session here.
+   > Download https://github.com/KookaBurra64/job-hunt-kit into this folder: use git clone if git is installed, otherwise download the ZIP from GitHub and unzip it here, including the hidden .claude folder. Then tell me to start a new session here.
 
 6. Start a new session in the same folder and say "hi". Claude takes it from there.
 
@@ -25,8 +25,8 @@ You need a paid Claude plan (Pro or above). Then:
 - **Finds jobs.** Searches Seek, Jora, Talent.com, Workday career sites
   (NAB, CBA, Telstra, Bunnings, NBN Co, CSL, RMIT and others) and the careers pages of about
   75 more employers, including Qantas, Canva, Xero, Carsales and BlueScope. Careers Vic, Built In
-  Melbourne and GradConnection are added where they apply. LinkedIn and Indeed can be switched
-  on in your settings; they are off by default because their terms do not allow automated searching. It uses plain web requests, not
+  Melbourne and GradConnection are added where they apply. LinkedIn can be switched on in your
+  settings; it is off by default because its terms do not allow automated searching. It uses plain web requests, not
   AI, so a search uses none of your Claude usage. Claude only reads the shortlist.
 - **Ranks them** against your own settings: the words that matter to you, your dealbreakers,
   your salary floor and your experience level.

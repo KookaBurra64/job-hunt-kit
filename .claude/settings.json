@@ -8,7 +8,10 @@
       "Bash(python tools/copy_check.py:*)",
       "Bash(python tools/criteria_check.py:*)",
       "Bash(python tools/estimate_lines.py:*)",
-      "Bash(python --version)"
+      "Bash(python --version)",
+      "Bash(python tools/build_cv.py:*)",
+      "Bash(python tools/build_letter.py:*)",
+      "Bash(python tools/log_response.py:*)"
     ]
   }
 }

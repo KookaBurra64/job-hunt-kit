@@ -36,7 +36,7 @@ The easiest way is to let Claude do it:
 2. Open that folder in the Code tab (see Step 4).
 3. Paste this message and press Enter:
 
-   > Download https://github.com/KookaBurra64/job-hunt-kit into this folder, including the hidden .claude folder. Then tell me to start a new session here.
+   > Download https://github.com/KookaBurra64/job-hunt-kit into this folder: use git clone if git is installed, otherwise download the ZIP from GitHub and unzip it here, including the hidden .claude folder. Then tell me to start a new session here.
 
 Claude downloads the kit into the folder and asks you to start a new session in the same
 folder, so it can read the kit's instructions. After that, go to Step 5.

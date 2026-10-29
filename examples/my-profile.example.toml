@@ -22,9 +22,9 @@ state = "VIC"             # VIC, NSW, QLD, WA, SA, TAS, ACT or NT
 include_remote = true     # also look for remote jobs anywhere in Australia
 days = 7                  # how far back to look
 
-# LinkedIn and Indeed are not searched unless you add them here, like this:
-#   extra_sources = ["linkedin", "indeed"]
-# Their terms of use do not allow automated searching. The search reads only their public
+# LinkedIn is not searched unless you add it here, like this:
+#   extra_sources = ["linkedin"]
+# Its terms of use do not allow automated searching. The search reads only their public
 # job listings, without logging in, at a gentle pace, but it is your call.
 extra_sources = []
 

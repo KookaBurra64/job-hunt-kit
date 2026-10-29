@@ -82,7 +82,7 @@ not every ad. If a job site is in `tools/blocked-domains.txt`, do not fetch it w
 ## Files
 
 - `PLAYBOOK.md`: where they are up to, what they want and what has been learned. Read first, update last.
-- `tools/agg_scan.py`: searches Seek, Jora, Talent.com, Workday career sites, and Careers Vic, Built In Melbourne and GradConnection where they apply. LinkedIn and Indeed only if `extra_sources` in `my-profile.toml` names them; never add them without asking, and explain that their terms do not allow automated searching. `--details` saves each ad's text. `--quick` does Seek and Talent.com only.
+- `tools/agg_scan.py`: searches Seek, Jora, Talent.com, Workday career sites, and Careers Vic, Built In Melbourne and GradConnection where they apply. LinkedIn only if `extra_sources` in `my-profile.toml` names it; never add it without asking, and explain that its terms do not allow automated searching. Indeed is not supported. `--details` saves each ad's text. `--quick` does Seek and Talent.com only.
 - `tools/ats_scan.py`: checks the careers pages of the companies in `tools/slugs.json` directly. `--probe NAME` tests a new company; add working ones to `slugs.json`.
 - `tools/rank_leads.py`: scores everything found today using `my-profile.toml`, writes `sourcing/rank-<date>.md`.
 - `tools/build_cv.py` and `tools/build_letter.py`: Word and PDF files in `output/`. PDF and page count need LibreOffice; without it they still make the Word file.

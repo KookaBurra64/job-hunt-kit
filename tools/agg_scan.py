@@ -2,8 +2,8 @@
 """Job board scan, zero LLM tokens.
 
 Searches Seek, Jora, Talent.com, Workday career sites and, where they apply,
-GradConnection, Built In Melbourne and Careers Vic. LinkedIn and Indeed are off unless
-extra_sources in my-profile.toml switches them on: their terms do not allow automated access. What it searches for and where
+GradConnection, Built In Melbourne and Careers Vic. LinkedIn is off unless extra_sources in
+my-profile.toml switches it on: its terms do not allow automated access. What it searches for and where
 comes from my-profile.toml. These sites block AI web tools but answer plain HTTP with a
 browser User-Agent. They can rate limit or change their pages without notice; a source
 that returns zero is flagged so you know.
@@ -46,7 +46,7 @@ OUTDIR = os.path.join(ROOT, "sourcing")
 import myprofile  # noqa: E402
 P = myprofile.search()
 TITLES = P["job_titles"]
-CITY_STATE = f"{P['city']} {P['state']}"          # "Melbourne VIC", the form Jora, Talent and Indeed take
+CITY_STATE = f"{P['city']} {P['state']}"          # "Melbourne VIC", the form Jora and Talent take
 
 SEEK_KEYWORDS = TITLES
 SEEK_WHERE = [f"All {CITY_STATE}" if P["is_capital"] else CITY_STATE]
@@ -428,62 +428,6 @@ def builtin_detail(url):
     return strip(m.group(1)) if m else ""
 
 
-# ----------------------------------------------------- Indeed (added 2026-10-06)
-# Search pages answer a browser UA with the job cards as JSON in window.mosaic.providerData;
-# viewjob detail pages 403, so Indeed is list only, like Jora.
-INDEED_QUERIES = [(t, CITY_STATE) for t in TITLES[:6]] + ([("remote " + TITLES[0], "Australia")] if P["include_remote"] else [])
-
-
-def curl(url):
-    # Indeed 403s urllib and Windows' own System32 curl.exe (TLS fingerprint) but answers Git's mingw curl.
-    # A bare "curl" in subprocess finds System32 first, so resolve PATH order with shutil.which.
-    import shutil, subprocess
-    r = subprocess.run([shutil.which("curl") or "curl", "-s", "-L", "--max-time", "30", "-A", UA, "-H", "Accept-Language: en-AU,en;q=0.9",
-                        "-w", "\n%{http_code}", url], capture_output=True, timeout=40)
-    body, _, code = r.stdout.decode("utf-8", "replace").rpartition("\n")
-    if code != "200":
-        raise RuntimeError(f"HTTP {code}")
-    return body
-
-
-def indeed_rows(days):
-    rows, errs = {}, []
-    for q, loc in INDEED_QUERIES:
-        for start in (0, 10, 20):
-            u = "https://au.indeed.com/jobs?" + urllib.parse.urlencode(
-                {"q": q, "l": loc, "fromage": str(min(days, 14)), "start": str(start)})
-            try:
-                h = curl(u)
-            except Exception as e:  # noqa: BLE001
-                errs.append(f"indeed {q!r} start={start}: {e}"); break
-            m = re.search(r'window\.mosaic\.providerData\["mosaic-provider-jobcards"\]\s*=\s*(\{.*?\});\s*\n', h, re.S)
-            if not m:
-                if start == 0:
-                    errs.append(f"indeed {q!r}: no job card JSON (markup change or bot wall?)")
-                break
-            try:
-                res = json.loads(m.group(1))["metaData"]["mosaicProviderJobCardsModel"]["results"]
-            except Exception as e:  # noqa: BLE001
-                errs.append(f"indeed {q!r}: {e}"); break
-            n = 0
-            for j in res:
-                jk = j.get("jobkey", "")
-                if not jk or jk in rows:
-                    continue
-                n += 1
-                pub = j.get("pubDate")
-                rows[jk] = {"source": "indeed", "id": jk, "company": j.get("company", ""),
-                            "title": j.get("displayTitle", ""), "location": j.get("formattedLocation", ""),
-                            "mode": "Remote" if j.get("remoteLocation") else "",
-                            "salary": (j.get("salarySnippet") or {}).get("text", ""), "type": "",
-                            "posted": dt.datetime.fromtimestamp(pub / 1000).date().isoformat() if pub else "",
-                            "teaser": "", "url": f"https://au.indeed.com/viewjob?jk={jk}"}
-            if n == 0:
-                break
-            time.sleep(1)
-    return list(rows.values()), errs
-
-
 # ------------------------------------------- Careers Vic, Victorian government (added 2026-10-06)
 # Careers Vic finds nothing for two-word searches, so it gets the single words from title_words.
 VIC_QUERIES = myprofile.load().get("filter", {}).get("title_words", [])[:6] or [t.split()[-1] for t in TITLES[:3]]
@@ -619,10 +563,9 @@ def main():
     ap.add_argument("--all", action="store_true", help="skip the title and seniority filter")
     ap.add_argument("--details", action="store_true", help="fetch descriptions for kept ads")
     ap.add_argument("--quick", action="store_true", help="Seek and Talent.com only, for a fast first try")
-    extra = [x for x in myprofile.load().get("search", {}).get("extra_sources", []) if x in ("linkedin", "indeed")]
+    extra = [x for x in myprofile.load().get("search", {}).get("extra_sources", []) if x == "linkedin"]
     ap.add_argument("--sources", default=",".join(["seek", "jora", "talent", "gradconnection", "builtin", "vic", "workday"] + extra),
-                    help="comma list; Glassdoor, Prosple and Adzuna block scripts (403/400 on 2026-09-08); "
-                         "Indeed search pages answer since 2026-10-06, its detail pages still 403")
+                    help="comma list; Glassdoor, Prosple and Adzuna block scripts (403/400 on 2026-09-08); ")
     a = ap.parse_args()
     src = {"seek", "talent"} if a.quick else set(a.sources.split(","))
 
@@ -633,7 +576,7 @@ def main():
     rows, errs = [], []
     fetchers = {"seek": seek_rows, "linkedin": li_rows, "jora": jora_rows, "gradconnection": gradconn_rows,
                 "builtin": builtin_rows, "talent": lambda d: talent_rows(d, ddir if a.details else None),
-                "indeed": indeed_rows, "vic": vic_rows, "workday": lambda d: workday_rows(d, ddir if a.details else None)}
+                "vic": vic_rows, "workday": lambda d: workday_rows(d, ddir if a.details else None)}
     for name, fn in fetchers.items():
         if name not in src:
             continue
@@ -656,7 +599,7 @@ def main():
 
         def fetch(r):
             fn = os.path.join(ddir, f"{r['source']}-{safe_id(r['id'])}.txt")
-            if os.path.exists(fn) or r["source"] not in DETAIL:   # jora and indeed detail pages 403; talent and workday written during scan
+            if os.path.exists(fn) or r["source"] not in DETAIL:   # jora detail pages 403; talent and workday written during scan
                 return None
             try:
                 body = DETAIL[r["source"]](r)

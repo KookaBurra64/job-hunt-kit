@@ -28,9 +28,10 @@ with web tools instead.
 When they turn a job down, note the reason in "What I'm looking for" in `PLAYBOOK.md` (for
 example "no call centre roles") so it isn't suggested again.
 
-If the results look thin and they mention LinkedIn, explain that LinkedIn and Indeed are off by
-default because their terms do not allow automated searching, and that `extra_sources` in
-`my-profile.toml` turns them on if they decide to. It is their call; do not push either way.
+If the results look thin and they mention LinkedIn, explain that LinkedIn is off by default
+because its terms do not allow automated searching, and that `extra_sources` in
+`my-profile.toml` turns it on if they decide to. Indeed is not searched at all; they can
+browse it themselves and paste in any ad they like. It is their call; do not push either way.
 
 If the results look wrong, offer to adjust `my-profile.toml`. Too many senior roles: add
 words to `skip_title_words`. Nothing relevant: broaden `job_titles`. Then run `rank_leads.py`
