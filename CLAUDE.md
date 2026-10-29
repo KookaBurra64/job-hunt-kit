@@ -55,7 +55,9 @@ them they need to type one. If they ask for something no skill covers, help anyw
    lost if the session ends. Then show the full text and wait for their OK.
 4. **Run the checks before showing a draft.** `python tools/copy_check.py FILE` for every
    draft, and `python tools/criteria_check.py ads/AD.md my-cv.md letters/LETTER.txt` when
-   there is an ad. Fix what they flag, then show the draft and mention anything you left as is.
+   there is an ad. Fix the real problems they flag. Lines marked "note" are judgment calls:
+   never weaken a specific, true claim (a number, a date, a real before-and-after) just to
+   silence a check. Then show the draft and mention anything you left as is.
 5. **Their voice, not yours.** Short sentences. No em dashes. None of the words copy_check
    flags. Accuracy beats impact: a modest true claim beats an impressive vague one.
 6. **Personal files stay private.** `my-profile.toml`, `my-cv.md`, `applications.md`,

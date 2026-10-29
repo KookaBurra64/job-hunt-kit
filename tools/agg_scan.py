@@ -8,11 +8,14 @@ comes from my-profile.toml. These sites block AI web tools but answer plain HTTP
 browser User-Agent. They can rate limit or change their pages without notice; a source
 that returns zero is flagged so you know.
 
-  Seek      https://www.seek.com.au/api/jobsearch/v5/search   JSON, public
-
-  Seek      https://www.seek.com.au/api/jobsearch/v5/search   JSON, public
-  LinkedIn  https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search   HTML cards, no login
-            https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/<id>             HTML detail, no login
+  Seek            seek.com.au/api/jobsearch/v5/search          JSON
+  Jora            au.jora.com/j                                search pages (no ad text)
+  Talent.com      au.talent.com/jobs and /view                 search and ad pages
+  Workday         <employer>.wdN.myworkdayjobs.com/wday/cxs    JSON, list in WORKDAY below
+  GradConnection  au.gradconnection.com/graduate-jobs          only with graduate_categories
+  Built In        builtinmelbourne.com                         Melbourne only
+  Careers Vic     careers.vic.gov.au                           Victoria only
+  LinkedIn        linkedin.com/jobs-guest                      only with extra_sources = ["linkedin"]
 
 Usage:
     python tools/agg_scan.py                 # last 7 days, your city + remote AU, filtered
@@ -249,7 +252,7 @@ def jora_rows(days):
                 rows[jid] = {"source": "jora", "id": jid, "company": html.unescape(j.get("company_name", "")),
                              "title": html.unescape(j.get("job_title", "")), "location": html.unescape(j.get("location", "")),
                              "mode": "", "salary": html.unescape(sal.group(1)) if sal else "", "type": "",
-                             "posted": html.unescape(listed.group(1)) if listed else "", "teaser": "",
+                             "posted": jora_date(html.unescape(listed.group(1))) if listed else "", "teaser": "",
                              "url": f"https://au.jora.com/job/{jid}"}
             if n < 15:
                 break
@@ -535,6 +538,22 @@ def workday_rows(days, ddir=None):
 
 
 # --------------------------------------------------------------- shared
+def jora_date(s):
+    """Jora says "2d ago", "14h ago" or "Today"; turn it into a date so it sorts with the rest."""
+    s = (s or "").lower()
+    m = re.search(r"(\d+)\+?\s*d", s)
+    if m:
+        return (dt.date.today() - dt.timedelta(days=int(m.group(1)))).isoformat()
+    if re.search(r"\d+\s*(h|m)\b|today|just|hour|minute", s):
+        return dt.date.today().isoformat()
+    return ""
+
+
+def cell(x):
+    """Table-safe text: a | in a job title would split the markdown table."""
+    return str(x or "").replace("|", "/").replace("\n", " ")
+
+
 def safe_id(x):
     """Job IDs come from the job sites; keep only safe characters before using one in a file name."""
     return re.sub(r"[^A-Za-z0-9_-]", "_", str(x))[:80] or "unknown"
@@ -623,8 +642,8 @@ def main():
           f"{len(kept)} candidate roles from {len(rows)} postings, last {a.days} days. Zero LLM tokens.", "",
           "| Posted | Source | Company | Title | Location | Mode | Salary | URL |", "|---|---|---|---|---|---|---|---|"]
     for r in kept:
-        md.append(f"| {r['posted']} | {r['source']} | {r['company']} | {r['title']} | {r['location']} | "
-                  f"{r['mode']} | {r['salary']} | {r['url']} |")
+        md.append("| " + " | ".join(cell(r[k]) for k in ("posted", "source", "company", "title", "location",
+                                                          "mode", "salary", "url")) + " |")
     if errs:
         md += ["", "## Errors", ""] + [f"- {e}" for e in errs]
     with open(os.path.join(OUTDIR, f"agg-{day}.md"), "w", encoding="utf-8") as f:

@@ -46,7 +46,8 @@ def search():
     city = s.get("city", "Melbourne").strip()
     state = s.get("state", "VIC").strip().upper()
     return {
-        "job_titles": s.get("job_titles", ["software engineer"]),
+        "job_titles": s.get("job_titles") or sys.exit("my-profile.toml has no job_titles under [search]. "
+                                                      "Ask Claude to add the jobs you are looking for."),
         "city": city,
         "state": state,
         "state_name": STATES.get(state, state),

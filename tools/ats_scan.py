@@ -10,7 +10,7 @@ WebFetch calls to discover them.
     python tools/ats_scan.py --probe canva    # test one slug across all 5 ATS
     python tools/ats_scan.py --all            # no title/seniority filter
 
-Stdlib only. Python 3.9+.
+Stdlib only. Python 3.11+ (my-profile.toml is read with tomllib).
 """
 
 import argparse
@@ -227,8 +227,8 @@ def main():
                 % (day, len(matches), total, len(hits), len(errs)))
         f.write("| Posted | Company | Title | Location | URL |\n|---|---|---|---|---|\n")
         for p in matches:
-            f.write("| %s | %s | %s | %s | %s |\n"
-                    % (p["posted"], p["company"], p["title"], p["location"], p["url"]))
+            f.write("| %s |\n" % " | ".join(str(p[k] or "").replace("|", "/")
+                                             for k in ("posted", "company", "title", "location", "url")))
         if errs:
             f.write("\n## Boards that failed this run\n\n")
             for x, y, z in errs:

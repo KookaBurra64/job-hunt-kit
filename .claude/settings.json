@@ -11,7 +11,25 @@
       "Bash(python --version)",
       "Bash(python tools/build_cv.py:*)",
       "Bash(python tools/build_letter.py:*)",
-      "Bash(python tools/log_response.py:*)"
+      "Bash(python tools/log_response.py:*)",
+      "Bash(py tools/agg_scan.py:*)",
+      "Bash(python3 tools/agg_scan.py:*)",
+      "Bash(py tools/ats_scan.py:*)",
+      "Bash(python3 tools/ats_scan.py:*)",
+      "Bash(py tools/rank_leads.py:*)",
+      "Bash(python3 tools/rank_leads.py:*)",
+      "Bash(py tools/copy_check.py:*)",
+      "Bash(python3 tools/copy_check.py:*)",
+      "Bash(py tools/criteria_check.py:*)",
+      "Bash(python3 tools/criteria_check.py:*)",
+      "Bash(py tools/estimate_lines.py:*)",
+      "Bash(python3 tools/estimate_lines.py:*)",
+      "Bash(py tools/build_cv.py:*)",
+      "Bash(python3 tools/build_cv.py:*)",
+      "Bash(py tools/build_letter.py:*)",
+      "Bash(python3 tools/build_letter.py:*)",
+      "Bash(py tools/log_response.py:*)",
+      "Bash(python3 tools/log_response.py:*)"
     ]
   }
 }

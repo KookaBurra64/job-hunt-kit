@@ -36,6 +36,16 @@ _S = myprofile.search()
 LOCAL = myprofile.words_re([_S["city"], _S["state"], _S["state_name"]])
 REMOTE_AU = re.compile(r"(?i)^[\s,;()-]*remote[\s,;()-]*$|remote.*australia|australia.*remote")
 
+def norm(s):
+    """Lower case, punctuation and extra spaces gone: 'Customer Service Officer - NAB' style matching."""
+    return " ".join(re.sub(r"[^a-z0-9 ]", " ", (s or "").lower()).split())
+
+
+def cell(x):
+    """Table-safe text: a | in a job title would split the markdown table."""
+    return str(x if x is not None else "").replace("|", "/").replace("\n", " ")
+
+
 def agg_scan_safe_id(x):
     """Same rule as safe_id in agg_scan.py, so ranked ads find their saved text."""
     return re.sub(r"[^A-Za-z0-9_-]", "_", str(x))[:80] or "unknown"
@@ -104,9 +114,18 @@ def main():
     for fn in glob.glob(os.path.join(ddir, "*.txt")):
         details[os.path.basename(fn)[:-4]] = open(fn, encoding="utf-8").read()
 
-    # Known: anything already saved in ads/ or applications.md, by URL id or company and title
-    known_text = " ".join(open(f, encoding="utf-8", errors="ignore").read().lower()
-                          for f in glob.glob(os.path.join(ROOT, "ads", "*.md")) + glob.glob(os.path.join(ROOT, "applications.md")))
+    # Known: the ad's URL is already in ads/ or applications.md, or applications.md has a row
+    # with the same company and job title. Whole values only, so "NAB" never matches "enabled".
+    saved = [open(f, encoding="utf-8", errors="ignore").read()
+             for f in glob.glob(os.path.join(ROOT, "ads", "*.md")) + glob.glob(os.path.join(ROOT, "applications.md"))]
+    known_urls = {u.rstrip(").,") for t in saved for u in re.findall(r"https?://\S+", t)}
+    applied = set()
+    app = os.path.join(ROOT, "applications.md")
+    if os.path.exists(app):
+        for line in open(app, encoding="utf-8", errors="ignore"):
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if line.startswith("| 20") and len(cells) >= 3:
+                applied.add((norm(cells[1]), norm(cells[2])))
 
     out = []
     for r in rows:
@@ -122,21 +141,46 @@ def main():
         loc = r.get("location", "") or ""
         if not (LOCAL.search(loc) or REMOTE_AU.search(loc) or r.get("mode") == "Remote"):
             pts -= 2; tags.append("outside-area")
-        known = (r.get("id", "") and str(r["id"]) in known_text) or (
-            r.get("company", "").lower()[:12] in known_text and r.get("title", "").lower()[:20] in known_text)
+        known = r.get("url", "") in known_urls or (
+            bool(norm(r.get("company"))) and (norm(r.get("company")), norm(r.get("title"))) in applied)
         out.append((pts, r, tags, known))
-    out.sort(key=lambda x: (-x[0], x[1].get("posted", "")))
+
+    # The same job is often on Seek, Jora and a careers page at once. Keep the best-scoring copy
+    # (ties go to the one with ad text) and say where else it was seen.
+    best = {}
+    for x in out:
+        k = (norm(x[1].get("company")), norm(x[1].get("title")))
+        if not k[0]:
+            k = (x[1].get("url", ""), "")
+        if k not in best:
+            best[k] = (x, [])
+        else:
+            cur, others = best[k]
+            if (x[0], "no-detail" not in x[2]) > (cur[0], "no-detail" not in cur[2]):
+                best[k] = (x, others + [cur[1].get("source", cur[1].get("ats", ""))])
+            else:
+                others.append(x[1].get("source", x[1].get("ats", "")))
+    out = []
+    for (pts, r, tags, known), others in best.values():
+        if others:
+            tags = tags + ["also on " + "/".join(sorted(set(others)))]
+        out.append((pts, r, tags, known))
+    # Highest score first; newest first among equal scores
+    out.sort(key=lambda x: x[1].get("posted", "") or "", reverse=True)
+    out.sort(key=lambda x: x[0], reverse=True)
 
     good = [x for x in out if x[0] > 0 and not any(t.startswith("DEALBREAKER") for t in x[2])]
     md = [f"# Ranked jobs {a.date}", "",
           f"{len(out)} ads scored by tools/rank_leads.py using my-profile.toml. Higher is better; the tags show "
-          f"which of your words matched. 'seen before' means it is already in ads/ or applications.md.", "",
+          f"which of your words matched. 'seen before' means it is already in ads/ or applications.md. "
+          f"'no-detail' means only the job title was scored (the site gave no ad text), so the score is low.", "",
           "| # | Score | Posted | Source | Company | Title | Location | Remote | Salary | Tags | URL |",
           "|---|---|---|---|---|---|---|---|---|---|---|"]
     for i, (pts, r, tags, known) in enumerate(out[:a.top], 1):
-        md.append(f"| {i} | {pts} | {r.get('posted', '')[:10]} | {r.get('source', r.get('ats', ''))} | {r.get('company', '')} | "
-                  f"{r.get('title', '')} | {r.get('location', '')} | {'yes' if r.get('mode') == 'Remote' else ''} | {r.get('salary', '')} | "
-                  f"{', '.join(tags)}{', seen before' if known else ''} | {r.get('url', '')} |")
+        md.append("| " + " | ".join(cell(v) for v in (
+            i, pts, r.get('posted', '')[:10], r.get('source', r.get('ats', '')), r.get('company', ''),
+            r.get('title', ''), r.get('location', ''), 'yes' if r.get('mode') == 'Remote' else '', r.get('salary', ''),
+            ', '.join(tags) + (', seen before' if known else ''), r.get('url', ''))) + " |")
     md += ["", f"## Worth a look ({len(good)})", "",
            "Positive score and no dealbreakers. New ones first.", ""]
     for pts, r, tags, known in sorted(good, key=lambda x: x[3]):

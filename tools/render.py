@@ -11,6 +11,7 @@ CANDIDATES = [
     shutil.which('soffice'),
     r'C:\Program Files\LibreOffice\program\soffice.exe',
     r'C:\Program Files (x86)\LibreOffice\program\soffice.exe',
+    '/Applications/LibreOffice.app/Contents/MacOS/soffice',
 ]
 
 
@@ -26,9 +27,17 @@ def to_pdf(docx_path):
         return None
     docx_path = os.path.abspath(docx_path)
     outdir = os.path.dirname(docx_path)
-    subprocess.run([exe, '--headless', '--convert-to', 'pdf', '--outdir', outdir, docx_path],
-                   check=True, capture_output=True, timeout=180)
     pdf = os.path.splitext(docx_path)[0] + '.pdf'
+    if os.path.exists(pdf):
+        os.remove(pdf)          # so an old PDF can't pass for a new one
+    try:
+        subprocess.run([exe, '--headless', '--convert-to', 'pdf', '--outdir', outdir, docx_path],
+                       check=True, capture_output=True, timeout=180)
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+        print('LibreOffice could not make the PDF:', type(e).__name__)
+    if not os.path.exists(pdf):
+        print('NO PDF was made. If LibreOffice is open, close it and build again. The Word file is fine.')
+        return None
     pages = None
     try:
         from pypdf import PdfReader

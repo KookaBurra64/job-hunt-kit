@@ -21,8 +21,9 @@ Run `python --version`. It must be 3.11 or newer. Then `python -c "import docx, 
     remind them to tick "Add python.exe to PATH" on the installer's first screen.
   - After any install, they need to close and reopen the app before Python is found. Say so,
     and tell them to just say "hi" again after they reopen it.
-- Import fails: run `python -m pip install -r requirements.txt`. Explain that it adds the two
-  small tools that make Word and PDF files.
+- Import fails: run `python -m pip install -r requirements.txt`. Before running it, explain that
+  it adds the two small tools that make Word and PDF files, and that a permission box will
+  pop up for it: click Allow.
 - LibreOffice is optional: it makes the PDF copies and counts pages. Offer
   `winget install --id TheDocumentFoundation.LibreOffice -e` on Windows. Do not push it.
 - On Windows, if `python` opens the Microsoft Store or says it is not found, try `py` instead,
@@ -34,6 +35,9 @@ Ask for their current CV. Easiest to hardest: drag a PDF into the chat (the + bu
 the message box also works), copy the CV file into this folder, or paste the text. For a
 Word file in the folder, read it with `python -c "import docx,sys; print('\n'.join(p.text for p in docx.Document(sys.argv[1]).paragraphs))" FILE`. Then ask one
 thing: is it up to date? If not, ask what has changed since.
+
+Keep their CV and every file made from it out of the `examples` folder: that folder is
+uploaded if they ever put their copy on GitHub. Their CV file can go in the main folder.
 
 Turn it into `my-cv.md` in the same shape as `examples/example-cv.md`: `# Name`, a contact
 line, then `##` sections and `-` bullets. Keep their words. Do not improve it or add claims yet.

@@ -35,7 +35,6 @@ PHRASES = [
     (r"(?i)\bit's not about [^.]{1,60}?, it's about\b", "negative parallelism"),
     (r"(?i)\b(?:furthermore|moreover|additionally|in addition|subsequently)\b", "filler transition"),
     (r"(?i)\b(?:in summary|to summari[sz]e|in conclusion|ultimately|to put it simply)\b", "summarising phrase"),
-    (r"(?i)\bfrom \w+(?: \w+)? to \w+(?: \w+)?\b(?=[,.;])", "possible false range"),
     (r"(?i)\bsheds? light on\b|\bwealth of\b|\ba testament to\b|\bbroader narrative\b|\brich tapestry\b", "stock phrase"),
     (r"(?i)\bembrac(?:e|es|ing) (?:change|the)\b", "stock phrase"),
     (r"(?i)\bplays? a (?:vital|crucial|key|pivotal) role\b", "exaggerated significance"),
@@ -44,7 +43,16 @@ PHRASES = [
     (r"\*\*[^*\n]{1,40}:\*\*", "bold-title bullet"),
 ]
 
+# Judgment calls: shown, never counted as a failure. A real range ("from a week to two days")
+# is a specific, true claim and must not be rewritten to silence this.
+NOTES = [
+    (r"(?i)\bfrom \w+(?: \w+)? to \w+(?: \w+)?\b(?=[,.;])", "check: is this a real range? Keep it if so"),
+]
+
 def sentences(t):
+    # Each bullet or line is its own sentence; strip list markers and markdown headings
+    lines = [re.sub(r"^\s*(?:[-*•]|\d+[.)]|#+)\s*", "", l).strip() for l in t.splitlines()]
+    t = " ".join(l if l[-1:] in ".!?" else l + "." for l in lines if l)
     t = re.sub(r"\s+", " ", t)
     parts = re.split(r"(?<=[.!?])\s+(?=[A-Z\"'(])", t)
     return [p for p in parts if len(p.split()) > 1]
@@ -66,6 +74,10 @@ def check(path):
             flagged += 1
             line = t.count("\n", 0, m.start()) + 1
             print(f"  {label} (line {line}): {m.group(0).strip()!r}")
+    for pat, label in NOTES:
+        for m in re.finditer(pat, t):
+            line = t.count("\n", 0, m.start()) + 1
+            print(f"  note, {label} (line {line}): {m.group(0).strip()!r}")
     s = sentences(t)
     if s:
         n = [len(x.split()) for x in s]

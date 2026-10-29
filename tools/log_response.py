@@ -16,8 +16,8 @@ RESPONSE, OUTCOME = 5, 6
 def main(argv):
     if len(argv) < 3:
         sys.exit(__doc__)
-    company, response = argv[1], argv[2]
-    outcome = argv[3] if len(argv) > 3 else None
+    company, response = argv[1], argv[2].replace("|", "/")
+    outcome = argv[3].replace("|", "/") if len(argv) > 3 else None
     today = datetime.date.today().isoformat()
     lines = io.open(PATH, encoding="utf-8").read().split("\n")
     hit = None
