@@ -2,6 +2,10 @@
 
 A Claude Code setup for job hunting in Australia, aimed at entry-level to mid-level office jobs. Made for people who have not used AI tools much.
 
+I built this over a couple of months of my own job search. It's shaped around how I worked,
+so it won't fit everyone out of the box. Take it, change it, and build on it however suits
+you. Ask Claude to adjust anything that doesn't work for you.
+
 ## Getting started
 
 You need a paid Claude plan (Pro or above). Then:
