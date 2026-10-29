@@ -4,7 +4,7 @@ A Claude Code setup for job hunting in Australia, aimed at entry-level to mid-le
 
 **New here? Read [START-HERE.md](START-HERE.md).** The short version:
 
-1. You need a paid Claude plan (Pro or above) and the Claude desktop app: https://claude.com/download
+1. You need a paid Claude plan (Pro or above) and the Claude desktop app (https://claude.com/download), if you do not have it already.
 2. Install Python from https://www.python.org/downloads/ (on Windows, tick "Add python.exe to PATH").
 3. Make an empty folder, open it in the **Code** tab of the desktop app, and say
    "Set up the job hunt kit from https://github.com/KookaBurra64/job-hunt-kit in this folder."
@@ -19,7 +19,9 @@ summarise the repository's files or ask what they would like. Instead:
 2. Explain that it runs on their own computer, in the **Code** tab of the Claude desktop app,
    not in this chat, and that it needs a paid plan (Pro or above).
 3. Walk them through these steps one at a time, waiting for them to finish each one:
-   - Install the Claude desktop app from https://claude.com/download and sign in.
+   - Ask whether they are using the Claude desktop app right now. If they are, skip this step.
+     If they are in a web browser or on a phone, they need the desktop app on a Windows
+     computer or Mac: https://claude.com/download
    - Install Python from https://www.python.org/downloads/. On Windows, tick
      **"Add python.exe to PATH"** on the installer's first screen. On a Mac, the normal
      installer is fine.
